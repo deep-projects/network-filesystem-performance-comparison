@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -eu
+
+IMG='docker.io/deepprojects/camelyon-cnns:tests'
+P=${HTTP_PROXY}
+PROXIES="-e HTTP_PROXY=${P} -e HTTPS_PROXY=${P} -e http_proxy=${P} -e https_proxy=${P}"
+OPTS='-u 1000:1000 --runtime=nvidia --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined --workdir=/home/cc/out'
+
+# more information on merged.hf5: https://github.com/deep-projects/camelyon-experiments-v2
+CMD='camelyon-cnns /home/cc/input/merged.hdf5'
+
+# INPDIR_TYPE and INPDIR are set to run performance tests on a remote NFS share
+# Change INPDIR_TYPE to SSD and INPDIR to an appropriate data location on your local SSD
+INPDIR_TYPE="NFS"
+#INPDIR_TYPE="SSD"
+INPDIR="/remote_nfs/inputs"
+#INPDIR="/local_ssd/inputs"
+OUTDIR="/outputs"
+
+docker pull ${IMG}
+
+mkdir ${OUTDIR}
+chmod 777 ${OUTDIR}
+
+outdir="${OUTDIR}/${INPDIR_TYPE}"
+mkdir ${outdir}
+chmod 777 ${outdir}
+
+for i in $(seq 1 9); do
+    outdir="${outdir}/${i}"
+    mkdir ${outdir}
+    chmod 777 ${outdir}
+    docker run ${OPTS} ${PROXIES} -e NVIDIA_VISIBLE_DEVICES=0 -v ${INPDIR}:/home/cc/input -v ${outdir}:/home/cc/out:rw ${IMG} ${CMD} --arch 1 --fast-hdf5 1 --mask-threshold 0.1 --epochs 8 --queue-size 1
+done
