@@ -28,8 +28,8 @@ mkdir ${outdir}
 chmod 777 ${outdir}
 
 for i in $(seq 1 9); do
-    outdir="${outdir}/${i}"
-    mkdir ${outdir}
-    chmod 777 ${outdir}
-    docker run ${OPTS} ${PROXIES} -e NVIDIA_VISIBLE_DEVICES=0 -v ${INPDIR}:/home/cc/input -v ${outdir}:/home/cc/out:rw ${IMG} ${CMD} --arch 1 --fast-hdf5 1 --mask-threshold 0.1 --epochs 8 --queue-size 1
+    outdir_n="${outdir}/${i}"
+    mkdir ${outdir_n}
+    chmod 777 ${outdir_n}
+    docker run ${OPTS} ${PROXIES} -e NVIDIA_VISIBLE_DEVICES=0 -v ${INPDIR}:/home/cc/input -v ${outdir_n}:/home/cc/out:rw ${IMG} ${CMD} --arch 1 --fast-hdf5 1 --mask-threshold 0.1 --epochs 8 --queue-size 1
 done
