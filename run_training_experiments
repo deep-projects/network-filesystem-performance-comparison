@@ -3,8 +3,6 @@
 set -eu
 
 IMG='docker.io/deepprojects/camelyon-cnns:tests'
-P=${HTTP_PROXY}
-PROXIES="-e HTTP_PROXY=${P} -e HTTPS_PROXY=${P} -e http_proxy=${P} -e https_proxy=${P}"
 OPTS='-u 1000:1000 --runtime=nvidia --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined --workdir=/home/cc/out'
 
 # more information on merged.hf5: https://github.com/deep-projects/camelyon-experiments-v2
