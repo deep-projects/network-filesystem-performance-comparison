@@ -5,7 +5,7 @@ This repository acompanies a publication and provides shell scripts to measure t
 
 ## Type 1: Random read speed for one large artificial file
 
-1. Install sysbench, SSHFS, NFS, HTTPDirFS.
+1. Install fio, SSHFS, NFS, HTTPDirFS.
 2. Setup data sources for the network filesystems.
 3. Adapt paths in the `do_benchmark_pepper.sh` bash script.
 4. Run the script.
